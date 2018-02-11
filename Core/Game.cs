@@ -22,6 +22,8 @@ namespace MonoRoids
         public GraphicsDeviceManager Graphics { get; }
 		SpriteBatch spriteBatch;
 		Ship ship;
+		Texture2D asteroidTexture1 { get; set; }
+		Texture2D shipTexture { get; set; }
 		public Bag<Asteroid> Asteroids { get; set; }
 		int maxAsteroids = 5;
 		Processor processor;
@@ -81,12 +83,11 @@ namespace MonoRoids
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			//Load ship texture
+			//Set ship texture
 			ship.LoadContent(this);
-			
 
-			//Load asteroid textures
-			foreach(Asteroid asteroid in Asteroids)
+			//Set asteroid textures
+			foreach (Asteroid asteroid in Asteroids)
 			{
 				asteroid.LoadContent(this);
 			}

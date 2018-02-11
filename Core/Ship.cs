@@ -6,9 +6,12 @@ namespace MonoRoids.Core
 	public class Ship : Entity
 	{
 		Texture2D shipTexture;
+		public int TurnSpeed { get; }
 
-		public void Initialize()
+		public Ship()
 		{
+			Speed = 50;
+			TurnSpeed = 5;
 		}
 
 		public void LoadContent(Game1 game)

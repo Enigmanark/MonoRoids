@@ -15,8 +15,9 @@ namespace MonoRoids.Core
 		public float RotationVelocity { get; set; }
 		public int Health { get; set; }
 
-		public Texture2D Texture { get; set; }
-
+		public Texture2D asteroidTexture1 { get; set; }
+		public int AsteroidWidth = 32;
+		public int AsteroidHeight = 32;
 		public Asteroid(int id)
 		{
 			ID = id;
@@ -26,10 +27,10 @@ namespace MonoRoids.Core
 		{
 
 			//Set position
-			var minX = Texture.Width;
-			var maxX = ScreenWidth - Texture.Width;
-			var minY = Texture.Height;
-			var maxY = ScreenHeight - Texture.Height;
+			var minX = AsteroidWidth;
+			var maxX = ScreenWidth - AsteroidWidth;
+			var minY = AsteroidHeight;
+			var maxY = ScreenHeight - AsteroidHeight;
 			Position = new Vector2(random.Next(minX, maxX), random.Next(minY, maxY));
 
 			//Set rotation velocity
@@ -44,16 +45,17 @@ namespace MonoRoids.Core
 			Velocity = new Vector2(xDir, yDir);
 		}
 
-		public void LoadContent(Game1 game)
+		public void LoadContent(Game game)
 		{
-			Texture = game.Content.Load<Texture2D>("asteroid");
-			SourceRect = new Rectangle(0, 0, Texture.Width, Texture.Height);
-			Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+			//Load asteroid texture
+			asteroidTexture1 = game.Content.Load<Texture2D>("asteroid");
+			SourceRect = new Rectangle(0, 0, AsteroidWidth, AsteroidHeight);
+			Origin = new Vector2(AsteroidWidth / 2, AsteroidHeight / 2);
 		}
 
 		public void Draw(SpriteBatch batch, GameTime gameTime)
 		{
-			batch.Draw(Texture, Position, SourceRect, Color.White, Rotation, Origin, 1.0f, SpriteEffects.None, 1);
+			batch.Draw(asteroidTexture1, Position, SourceRect, Color.White, Rotation, Origin, 1.0f, SpriteEffects.None, 1);
 		}
 	}
 }
