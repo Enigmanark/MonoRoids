@@ -11,9 +11,10 @@ namespace MonoRoids.Core
 	{
 		public Vector2 Position { get; set; }
 		public float Rotation { get; set; }
-		public float Velocity { get; set; }
+		public Vector2 Velocity { get; set; }
 		public Rectangle SourceRect { get; set; }
 		public Vector2 Origin { get; set; }
+		public float Speed { get; set; }
 
 	}
 }
