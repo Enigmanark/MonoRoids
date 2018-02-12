@@ -10,7 +10,7 @@ namespace MonoRoids.Core
 {
 	public class Laser : Entity
 	{
-		public Texture2D Texture { get; set; }
+		public Texture2D LaserTex { get; set; }
 
 		public Laser(Vector2 position, float rotation, Vector2 velocity)
 		{
@@ -19,16 +19,16 @@ namespace MonoRoids.Core
 			Rotation = rotation;
 		}
 
-		public void LoadContent(Texture2D laserTex)
+		public void LoadContent(World world)
 		{
-			Texture = laserTex;
-			SourceRect = new Rectangle(0, 0, Texture.Width, Texture.Height);
-			Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+			LaserTex = world.LaserTex;
+			SourceRect = new Rectangle(0, 0, LaserTex.Width, LaserTex.Height);
+			Origin = new Vector2(LaserTex.Width / 2, LaserTex.Height / 2);
 		}
 
 		public void Draw(SpriteBatch batch, GameTime gameTime)
 		{
-			batch.Draw(Texture, Position, SourceRect, Color.White, Rotation, Origin, 1.0f, SpriteEffects.None, 1);
+			batch.Draw(LaserTex, Position, SourceRect, Color.White, Rotation, Origin, 1.0f, SpriteEffects.None, 1);
 		}
 	}
 }

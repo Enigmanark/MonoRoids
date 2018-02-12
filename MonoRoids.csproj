@@ -42,10 +42,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Core\Asteroid.cs" />
+    <Compile Include="Core\Controller_Draw.cs" />
+    <Compile Include="Core\Controller_Update.cs" />
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\Game.cs" />
     <Compile Include="Core\Laser.cs" />
-    <Compile Include="Core\Processor.cs" />
+    <Compile Include="Core\World.cs" />
     <Compile Include="Core\Ship.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

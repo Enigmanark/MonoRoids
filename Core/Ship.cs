@@ -14,11 +14,16 @@ namespace MonoRoids.Core
 			TurnSpeed = 2;
 		}
 
+		public void Respawn()
+		{
+			Position = new Vector2(GameCore.SCREEN_WIDTH / 2, GameCore.SCREEN_HEIGHT / 2);
+		}
+
 		public void LoadContent(GameCore game)
 		{
 			//Load player ship
 			shipTexture = game.Content.Load<Texture2D>("ship");
-			Position = new Vector2(game.SCREEN_WIDTH / 2, game.SCREEN_HEIGHT / 2);
+			Position = new Vector2(GameCore.SCREEN_WIDTH / 2, GameCore.SCREEN_HEIGHT / 2);
 			SourceRect = new Rectangle(0, 0, shipTexture.Width, shipTexture.Height);
 			Origin = new Vector2(shipTexture.Width / 2, shipTexture.Height / 2);
 		}
