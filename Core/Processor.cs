@@ -17,7 +17,7 @@ namespace MonoRoids.Core
 		private bool _canFire = true;
 		private float _fireTimer = 0f;
 		private float _fireDownTime = 0.35f;
-		private int _laserSpeed = 100;
+		private int _laserSpeed = 220;
 
 		private void Input(Ship ship, Texture2D laserTex, Bag<Laser> lasers,  GameTime gameTime)
 		{
