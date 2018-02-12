@@ -25,6 +25,7 @@ namespace MonoRoids
 		public Texture2D LaserTex { get; set; }
 		public Bag<Asteroid> Asteroids { get; set; }
 		public Bag<Laser> Lasers { get; set; }
+		public SpriteFont Mono10 { get; set; }
 		int _maxAsteroids = 5;
 		Processor processor;
 		public Random Random { get; }
@@ -98,6 +99,8 @@ namespace MonoRoids
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+			Mono10 = Content.Load<SpriteFont>("FreeMono_10");
+
 			LaserTex = Content.Load<Texture2D>("laser");
 
 			//Set ship texture
@@ -146,6 +149,9 @@ namespace MonoRoids
 			{
 				laser.Draw(spriteBatch, gameTime);
 			}
+
+			//Draw Score
+			spriteBatch.DrawString(Mono10, "Hello World!", new Vector2(0, 0), Color.White);
 
 			spriteBatch.End();
 
