@@ -16,5 +16,10 @@ namespace MonoRoids.Core
 		public Vector2 Origin { get; set; }
 		public float Speed { get; set; }
 
+		public Rectangle GetHitBox()
+		{
+			return (new Rectangle((int)Position.X, (int)Position.Y, SourceRect.Size.X, SourceRect.Size.Y));
+		}
+
 	}
 }

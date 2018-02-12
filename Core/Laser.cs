@@ -19,9 +19,9 @@ namespace MonoRoids.Core
 			Rotation = rotation;
 		}
 
-		public void LoadContent(Game game)
+		public void LoadContent(Texture2D laserTex)
 		{
-			Texture = game.Content.Load<Texture2D>("laser");
+			Texture = laserTex;
 			SourceRect = new Rectangle(0, 0, Texture.Width, Texture.Height);
 			Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
 		}

@@ -12,25 +12,29 @@ namespace MonoRoids
 	/// <summary>
 	/// This is the main type for your game.
 	/// </summary>
-	public class Game1 : Game
+	public class GameCore : Game
 	{
 		public int WINDOW_WIDTH { get; }
 		public int WINDOW_HEIGHT { get; }
 		public int SCREEN_WIDTH { get; }
 		public int SCREEN_HEIGHT { get; }
 		private Camera2D camera;
-        public GraphicsDeviceManager Graphics { get; }
+		public GraphicsDeviceManager Graphics { get; }
 		SpriteBatch spriteBatch;
-		Ship ship;
-		Texture2D asteroidTexture1 { get; set; }
-		Texture2D shipTexture { get; set; }
+		public Ship Ship { get; }
+		public Texture2D LaserTex { get; set; }
 		public Bag<Asteroid> Asteroids { get; set; }
-		int maxAsteroids = 5;
+		public Bag<Laser> Lasers { get; set; }
+		int _maxAsteroids = 5;
 		Processor processor;
-		Random random = new Random();
+		public Random Random { get; }
 
-		public Game1()
+		public Bag<Texture2D> LargeAsteroidTextures { get; set; }
+		public Bag<Texture2D> SmallAsteroidTextures { get; set; }
+
+		public GameCore()
         {
+			//Init core stuff
 			WINDOW_WIDTH = 800;
 			WINDOW_HEIGHT = 600;
 			SCREEN_WIDTH = 480;
@@ -44,12 +48,23 @@ namespace MonoRoids
 			//Init asteroid bag
 			Asteroids = new Bag<Asteroid>();
 
+			//Init laser bag
+			Lasers = new Bag<Laser>();
+
+			//Init large asteroid textures bag
+			LargeAsteroidTextures = new Bag<Texture2D>();
+
+			//Init small asteroid textures bag
+			SmallAsteroidTextures = new Bag<Texture2D>();
+
 			//Init processor
 			processor = new Processor();
 
 			//Init ship
-			ship = new Ship();
+			Ship = new Ship();
 
+			//Init random
+			Random = new Random();
 		}
 
 		protected override void Initialize()
@@ -59,9 +74,9 @@ namespace MonoRoids
 			camera = new Camera2D(adapter);
 
 			//Init asteroids
-			for (int i = 0; i < maxAsteroids; i++)
+			for (int i = 0; i < _maxAsteroids; i++)
 			{
-				Asteroid asteroid = new Asteroid(i);
+				Asteroid asteroid = new Asteroid();
 				Asteroids.Add(asteroid);
 			}
 
@@ -74,7 +89,7 @@ namespace MonoRoids
 			//Place asteroids and set rotation velocity
 			foreach(Asteroid asteroid in Asteroids)
 			{
-				asteroid.PostInit(random, SCREEN_WIDTH, SCREEN_HEIGHT);
+				asteroid.PostInit(LargeAsteroidTextures, Random, SCREEN_WIDTH, SCREEN_HEIGHT);
 			}
 
 		}
@@ -83,14 +98,17 @@ namespace MonoRoids
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			//Set ship texture
-			ship.LoadContent(this);
+			LaserTex = Content.Load<Texture2D>("laser");
 
-			//Set asteroid textures
-			foreach (Asteroid asteroid in Asteroids)
-			{
-				asteroid.LoadContent(this);
-			}
+			//Set ship texture
+			Ship.LoadContent(this);
+
+			//Load asteroid textures
+			LargeAsteroidTextures.Add(Content.Load<Texture2D>("asteroid"));
+
+			//Load Small asteroid textures
+			SmallAsteroidTextures.Add(Content.Load<Texture2D>("smallasteroid1"));
+			SmallAsteroidTextures.Add(Content.Load<Texture2D>("smallasteroid2"));
 
 			//Run post initialization
 			PostInit();
@@ -103,7 +121,7 @@ namespace MonoRoids
 
         protected override void Update(GameTime gameTime)
         {
-			processor.Update(SCREEN_WIDTH, SCREEN_HEIGHT, ship, Asteroids, gameTime);
+			processor.Update(this, gameTime);
 
             base.Update(gameTime);
         }
@@ -115,12 +133,18 @@ namespace MonoRoids
 			spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
 
 			//Draw ship
-			ship.Draw(spriteBatch, gameTime);
+			Ship.Draw(spriteBatch, gameTime);
 
 			//Draw asteroids
 			foreach(Asteroid asteroid in Asteroids)
 			{
 				asteroid.Draw(spriteBatch, gameTime);
+			}
+
+			//Draw lasers
+			foreach(Laser laser in Lasers)
+			{
+				laser.Draw(spriteBatch, gameTime);
 			}
 
 			spriteBatch.End();

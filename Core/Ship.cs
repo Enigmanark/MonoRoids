@@ -11,10 +11,10 @@ namespace MonoRoids.Core
 		public Ship()
 		{
 			Speed = 50;
-			TurnSpeed = 5;
+			TurnSpeed = 2;
 		}
 
-		public void LoadContent(Game1 game)
+		public void LoadContent(GameCore game)
 		{
 			//Load player ship
 			shipTexture = game.Content.Load<Texture2D>("ship");
