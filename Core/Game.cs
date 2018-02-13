@@ -57,6 +57,14 @@ namespace MonoRoids
 			base.Initialize();
         }
 
+		//Unload game
+		public void UnloadGame()
+		{
+			World = null;
+			GameState = 0;
+			IsMouseVisible = true;
+		}
+
 		//Only run on Start game
 		protected void LoadGame()
 		{
@@ -66,6 +74,7 @@ namespace MonoRoids
 			World.LoadContent(this);
 			World.PostInit();
 			GameState = 1;
+			IsMouseVisible = false;
 		}
 
 		protected override void LoadContent()
@@ -82,7 +91,7 @@ namespace MonoRoids
 
         protected override void Update(GameTime gameTime)
         {
-			if (GameState == 1) World.Update(gameTime);
+			if (GameState == 1) World.Update(this, gameTime);
 			//Update GUI if on title screen
 			else if (GameState == 0)
 			{

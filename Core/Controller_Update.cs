@@ -13,10 +13,10 @@ namespace MonoRoids.Core
 		private float _fireDownTime = 0.35f;
 		private int _laserSpeed = 220;
 
-		public void Update(World world, GameTime gameTime)
+		public void Update(GameCore game, World world, GameTime gameTime)
 		{
 			var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-			Input(world, delta);
+			Input(game, world, delta);
 			UpdateShip(world.Ship, delta);
 			UpdateLasers(world.Lasers, delta);
 			UpdateAsteroids(world.Asteroids, delta);
@@ -25,8 +25,10 @@ namespace MonoRoids.Core
 			if (AreAllAsteroidsDestroyed(world.Asteroids)) world.TransitionToNewLevel = true;
 		}
 
-		private void Input(World world, float delta)
+		private void Input(GameCore game, World world, float delta)
 		{
+			//Return to menu?
+			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) game.UnloadGame();
 
 			//countdown fire timer if _canFire is false
 			if (!_canFire)

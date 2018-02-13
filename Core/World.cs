@@ -124,10 +124,10 @@ namespace MonoRoids.Core
 			}
 		}
 
-		public void Update(GameTime gameTime)
+		public void Update(GameCore game, GameTime gameTime)
 		{
 			if (TransitionToNewLevel) TransitionLevel((float)gameTime.ElapsedGameTime.TotalSeconds);
-			else Updater.Update(this, gameTime);
+			else Updater.Update(game, this, gameTime);
 		}
 		
 		public void Draw(SpriteBatch batch, GameTime gameTime)
