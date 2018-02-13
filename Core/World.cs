@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.ViewportAdapters;
@@ -29,6 +30,8 @@ namespace MonoRoids.Core
 		public Texture2D LaserTex { get; set; }
 		public Texture2D Background { get; set; }
 		public Texture2D ExplosionTex { get; set; }
+		public SoundEffect ExplosionSnd { get; set; }
+		public SoundEffect LaserSnd { get; set; }
 
 		public bool TransitionToNewLevel { get; set; }
 		public bool ReloadingLevel { get; set; }
@@ -92,6 +95,12 @@ namespace MonoRoids.Core
 
 			//Load explosion texture
 			ExplosionTex = game.Content.Load<Texture2D>("free_explosion_1_128x128");
+
+			//Load laser effect
+			LaserSnd = game.Content.Load<SoundEffect>("Photon 1");
+
+			//Load explosion effect
+			ExplosionSnd = game.Content.Load<SoundEffect>("explosion1");
 
 			Drawer.LoadContent(game);
 		}

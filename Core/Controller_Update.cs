@@ -84,7 +84,7 @@ namespace MonoRoids.Core
 			{
 				var xVelocity = (float)(Math.Cos(world.Ship.Rotation) * _laserSpeed);
 				var yVelocity = (float)(Math.Sin(world.Ship.Rotation) * _laserSpeed);
-				var laser = new Laser(world.Ship.Position, world.Ship.Rotation, new Vector2(xVelocity, yVelocity));
+				var laser = new Laser(world.LaserSnd, world.Ship.Position, world.Ship.Rotation, new Vector2(xVelocity, yVelocity));
 				laser.LoadContent(world);
 				world.Lasers.Add(laser);
 				_canFire = false;
@@ -111,7 +111,7 @@ namespace MonoRoids.Core
 						if (asteroid.Type == 1)
 						{
 							//Make an explosion
-							world.Explosions.Add(new Explosion(world.ExplosionTex, asteroid.Position));
+							world.Explosions.Add(new Explosion(world.ExplosionTex, world.ExplosionSnd, asteroid.Position));
 
 							//Destroy the big asteroid and the laser and create 2 small asteroids
 							world.Asteroids.Remove(asteroid);
@@ -129,7 +129,7 @@ namespace MonoRoids.Core
 						else if (asteroid.Type == 2)
 						{
 							//Make an explosion
-							world.Explosions.Add(new Explosion(world.ExplosionTex, asteroid.Position));
+							world.Explosions.Add(new Explosion(world.ExplosionTex, world.ExplosionSnd, asteroid.Position));
 
 							//Destroy the small asteroid and the laser
 							world.Asteroids.Remove(asteroid);

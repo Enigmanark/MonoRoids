@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace MonoRoids.Core
 	public class Explosion : Entity
 	{
 		public Texture2D Texture;
+		public SoundEffect effect;
 		private int frameSize = 128;
 		private float _timer = 0f;
 		private int frame = 0;
@@ -19,13 +21,15 @@ namespace MonoRoids.Core
 		private float frameTime = 0.1f;
 		private int frames = 8;
 
-		public Explosion(Texture2D tex, Vector2 pos)
+		public Explosion(Texture2D tex, SoundEffect snd, Vector2 pos)
 		{
 			Texture = tex;
+			effect = snd;
 			Position = pos;
 			destroy = false;
 			Rotation = 0;
 			Origin = Vector2.Zero;
+			effect.Play();
 		}
 
 		public void Update(float delta)

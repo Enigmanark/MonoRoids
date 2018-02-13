@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,14 @@ namespace MonoRoids.Core
 	public class Laser : Entity
 	{
 		public Texture2D LaserTex { get; set; }
+		public SoundEffect Effect { get; set; }
 
-		public Laser(Vector2 position, float rotation, Vector2 velocity)
+		public Laser(SoundEffect effect, Vector2 position, float rotation, Vector2 velocity)
 		{
 			Position = position;
 			Velocity = velocity;
 			Rotation = rotation;
+			effect.Play();
 		}
 
 		public void LoadContent(World world)

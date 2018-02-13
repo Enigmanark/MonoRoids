@@ -134,12 +134,12 @@
 #begin explosion1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
-/processorParam:Quality=Best
+/processorParam:Quality=Low
 /build:explosion1.wav
 
 #begin Photon 1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
-/processorParam:Quality=Best
+/processorParam:Quality=Low
 /build:Photon 1.wav
 
