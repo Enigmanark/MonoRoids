@@ -131,3 +131,15 @@
 /processorParam:TextureFormat=Color
 /build:free_explosion_1_128x128.png
 
+#begin explosion1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:explosion1.wav
+
+#begin Photon 1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Photon 1.wav
+
