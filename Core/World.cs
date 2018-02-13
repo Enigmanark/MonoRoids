@@ -30,6 +30,10 @@ namespace MonoRoids.Core
 		public Texture2D Background { get; set; }
 		public Texture2D ExplosionTex { get; set; }
 
+		public bool TransitionToNewLevel { get; set; }
+		public float TransitionTime = 2f;
+		private float _transitionTimer = 0f;
+
 		public void Init(BoxingViewportAdapter adapter)
 		{
 			//Create Controllers
@@ -63,7 +67,7 @@ namespace MonoRoids.Core
 			//Init game vars
 			Score = 0;
 			Lives = 3;
-			Level = 1;
+			Level = 0;
 
 		}
 
@@ -91,13 +95,25 @@ namespace MonoRoids.Core
 			Drawer.LoadContent(game);
 		}
 
+		public void TransitionLevel(float delta)
+		{
+			_transitionTimer += delta;
+			if(_transitionTimer >= TransitionTime)
+			{
+				_transitionTimer = 0;
+				GenerateLevel();
+				TransitionToNewLevel = false;
+			}
+		}
+
 		public void PostInit()
 		{
-			GenerateLevel();
+			TransitionToNewLevel = true;
 		}
 
 		private void GenerateLevel()
 		{
+			Level += 1;
 			var maxAsteroids = Level * 1.5;
 
 			for(int i = 0; i < maxAsteroids; i++)
@@ -110,7 +126,8 @@ namespace MonoRoids.Core
 
 		public void Update(GameTime gameTime)
 		{
-			Updater.Update(this, gameTime);
+			if (TransitionToNewLevel) TransitionLevel((float)gameTime.ElapsedGameTime.TotalSeconds);
+			else Updater.Update(this, gameTime);
 		}
 		
 		public void Draw(SpriteBatch batch, GameTime gameTime)

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Collections;
 using System;
+using System.Diagnostics;
 
 namespace MonoRoids.Core
 {
@@ -21,6 +22,7 @@ namespace MonoRoids.Core
 			UpdateAsteroids(world.Asteroids, delta);
 			ProcessCollisions(world);
 			UpdateExplosions(world.Explosions, delta);
+			if (AreAllAsteroidsDestroyed(world.Asteroids)) world.TransitionToNewLevel = true;
 		}
 
 		private void Input(World world, float delta)
@@ -145,6 +147,15 @@ namespace MonoRoids.Core
 					}
 				}
 			}
+		}
+
+		private bool AreAllAsteroidsDestroyed(Bag<Asteroid> asteroids)
+		{
+			if (asteroids.Count == 0)
+			{
+				return true;
+			}
+			else return false;
 		}
 
 		private void UpdateExplosions(Bag<Explosion> explosions, float delta)
