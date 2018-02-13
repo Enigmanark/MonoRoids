@@ -50,6 +50,7 @@ namespace MonoRoids
 			World.Init(videoAdapter);
 			World.LoadContent(this);
 			World.PostInit();
+			GameState = 1;
 		}
 
 		protected override void LoadContent()
