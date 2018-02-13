@@ -39,7 +39,13 @@ namespace MonoRoids.Core
 			world.Ship.Draw(batch, gameTime);
 
 			//draw score
-			batch.DrawString(Mono10, "Score: " + world.Score, Vector2.Zero, Color.White);
+			batch.DrawString(Mono10, "Score: " + world.Score, new Vector2(10, 0), Color.White);
+
+			//draw lives
+			batch.DrawString(Mono10, "Lives: " + world.Lives, new Vector2(200, 0), Color.White);
+
+			//Draw level
+			batch.DrawString(Mono10, "Level: " + world.Level, new Vector2(300, 0), Color.White);
 
 			batch.End();
 		}
