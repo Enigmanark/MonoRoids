@@ -71,7 +71,7 @@ namespace MonoRoids.Core
 			//Init game vars
 			Score = 0;
 			Lives = 3;
-			Level = 6;
+			Level = 0;
 
 		}
 
