@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.ViewportAdapters;
 using System;
@@ -80,6 +79,8 @@ namespace MonoRoids.Core
 
 			//Load laser texture
 			LaserTex = game.Content.Load<Texture2D>("laser");
+
+			Drawer.LoadContent(game);
 		}
 
 		public void PostInit(int SCREEN_WIDTH, int SCREEN_HEIGHT)

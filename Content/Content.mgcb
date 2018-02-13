@@ -78,7 +78,7 @@
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
+/processorParam:TextureFormat=NoChange
 /build:FreeMono_10.spritefont
 
 #begin star_background1.png

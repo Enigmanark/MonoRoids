@@ -2,10 +2,6 @@
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Collections;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MonoRoids.Core
 {
@@ -18,16 +14,16 @@ namespace MonoRoids.Core
 
 		public void Update(World world, GameTime gameTime)
 		{
-			Input(world, gameTime);
-			UpdateShip(world.Ship, gameTime);
-			UpdateLasers(world.Lasers, gameTime);
-			UpdateAsteroids(GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT, world.Asteroids, gameTime);
+			var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+			Input(world, delta);
+			UpdateShip(world.Ship, delta);
+			UpdateLasers(world.Lasers, delta);
+			UpdateAsteroids(world.Asteroids, delta);
 			ProcessCollisions(world);
 		}
 
-		private void Input(World world, GameTime gameTime)
+		private void Input(World world, float delta)
 		{
-			var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 			//countdown fire timer if _canFire is false
 			if (!_canFire)
@@ -140,36 +136,21 @@ namespace MonoRoids.Core
 			}
 		}
 
-		private void UpdateAsteroids(int ScreenWidth, int ScreenHeight, Bag<Asteroid> asteroids, GameTime gameTime)
+		private void UpdateAsteroids(Bag<Asteroid> asteroids, float delta)
 		{
 			foreach (Asteroid asteroid in asteroids)
 			{
-				var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-				//Spin asteroid
-				asteroid.Rotation += asteroid.RotationVelocity * delta;
-				if (asteroid.Rotation > 360) asteroid.Rotation = 0;
-
-				//Move asteroid
-				asteroid.Position += (asteroid.Velocity * asteroid.Speed) * delta;
-
-				//Wrap asteroid
-				if (asteroid.Position.X > ScreenWidth) asteroid.Position = new Vector2(0, asteroid.Position.Y);
-				else if (asteroid.Position.X < 0) asteroid.Position = new Vector2(ScreenWidth, asteroid.Position.Y);
-				if (asteroid.Position.Y > ScreenHeight) asteroid.Position = new Vector2(asteroid.Position.X, 0);
-				else if (asteroid.Position.Y < 0) asteroid.Position = new Vector2(asteroid.Position.X, ScreenHeight);
+				asteroid.Update(delta);
 			}
 		}
 
-		private void UpdateShip(Ship ship, GameTime gameTime)
+		private void UpdateShip(Ship ship, float delta)
 		{
-			var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 			ship.Position += (ship.Velocity * delta);
 		}
 
-		private void UpdateLasers(Bag<Laser> lasers, GameTime gameTime)
+		private void UpdateLasers(Bag<Laser> lasers, float delta)
 		{
-			var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 			foreach (Laser laser in lasers)
 			{
 				laser.Position += (laser.Velocity * delta);

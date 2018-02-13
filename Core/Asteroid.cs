@@ -18,6 +18,22 @@ namespace MonoRoids.Core
 		public int Health { get; set; }
 		public Texture2D AsteroidTexture {get;set;}
 
+		public void Update(float delta)
+		{
+			//Spin asteroid
+			Rotation += RotationVelocity * delta;
+			if (Rotation > 360) Rotation = 0;
+
+			//Move asteroid
+			Position += (Velocity * Speed) * delta;
+
+			//Wrap asteroid
+			if (Position.X > GameCore.SCREEN_WIDTH) Position = new Vector2(0, Position.Y);
+			else if (Position.X < 0) Position = new Vector2(GameCore.SCREEN_WIDTH, Position.Y);
+			if (Position.Y > GameCore.SCREEN_HEIGHT) Position = new Vector2(Position.X, 0);
+			else if (Position.Y < 0) Position = new Vector2(Position.X, GameCore.SCREEN_HEIGHT);
+		}
+
 		public void InitSmallAsteroid(Bag<Texture2D> smallAsteroidTextures, Random random, Vector2 position)
 		{
 			//Init type
