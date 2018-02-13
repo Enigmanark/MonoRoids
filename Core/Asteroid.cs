@@ -17,6 +17,7 @@ namespace MonoRoids.Core
 		public float RotationVelocity { get; set; }
 		public int Health { get; set; }
 		public Texture2D AsteroidTexture {get;set;}
+		private int _asteroidOffset = 125;
 
 		public void Update(float delta)
 		{
@@ -62,7 +63,7 @@ namespace MonoRoids.Core
 			Origin = new Vector2(AsteroidTexture.Width / 2, AsteroidTexture.Height / 2);
 		}
 
-		public void GenerateLargeAsteroid(Bag<Texture2D> largeAsteroidTextures, Random random, int ScreenWidth, int ScreenHeight)
+		public void GenerateLargeAsteroid(Bag<Texture2D> largeAsteroidTextures, Ship ship, Random random, int ScreenWidth, int ScreenHeight)
 		{
 			//Init type
 			Type = 1;
@@ -78,6 +79,16 @@ namespace MonoRoids.Core
 			var minY = AsteroidTexture.Height;
 			var maxY = ScreenHeight - AsteroidTexture.Height;
 			Position = new Vector2(random.Next(minX, maxX), random.Next(minY, maxY));
+
+			if(this.GetHitBox().Intersects(ship.GetHitBox()))
+			{
+				var dir = random.Next(0, 1);
+				if (dir == 0)
+				{
+					Position = new Vector2(Position.X - _asteroidOffset, Position.Y);
+				}
+				else Position = new Vector2(Position.X + _asteroidOffset, Position.Y);
+			}
 
 			//Set rotation velocity
 			var maxVelocity = 3;

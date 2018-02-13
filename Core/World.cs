@@ -119,7 +119,7 @@ namespace MonoRoids.Core
 			for(int i = 0; i < maxAsteroids; i++)
 			{
 				var asteroid = new Asteroid();
-				asteroid.GenerateLargeAsteroid(LargeAsteroidTextures, Random, GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
+				asteroid.GenerateLargeAsteroid(LargeAsteroidTextures, Ship, Random, GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
 				Asteroids.Add(asteroid);
 			}
 		}
