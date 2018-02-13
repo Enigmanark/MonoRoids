@@ -31,6 +31,32 @@ namespace MonoRoids.Core
 				var y = (GameCore.SCREEN_HEIGHT / 2) - (textHeight / 2);
 				batch.DrawString(levelFont, textString, new Vector2(x, y), Color.White); 
 			}
+			else if (world.ReloadingLevel)
+			{
+				var level = world.Level;
+				var textString = "Level " + level;
+				var textWidth = levelFont.MeasureString(textString).X;
+				var textHeight = levelFont.MeasureString(textString).Y;
+				var x = (GameCore.SCREEN_WIDTH / 2) - (textWidth / 2);
+				var y = (GameCore.SCREEN_HEIGHT / 2) - (textHeight / 2);
+				batch.DrawString(levelFont, textString, new Vector2(x, y), Color.White);
+			}
+			else if(world.GameOver)
+			{
+				var textString = "Game Over";
+				var textWidth = levelFont.MeasureString(textString).X;
+				var textHeight = levelFont.MeasureString(textString).Y;
+				var x = (GameCore.SCREEN_WIDTH / 2) - (textWidth / 2);
+				var y = (GameCore.SCREEN_HEIGHT / 2) - (textHeight / 2) - 50;
+				batch.DrawString(levelFont, textString, new Vector2(x, y), Color.White);
+
+				var textString2 = "Score: " + world.Score;
+				var textWidth2 = levelFont.MeasureString(textString2).X;
+				var textHeight2 = levelFont.MeasureString(textString2).Y;
+				var x2 = (GameCore.SCREEN_WIDTH / 2) - (textWidth2 / 2);
+				var y2 = (GameCore.SCREEN_HEIGHT / 2) - (textHeight2 / 2) + 50;
+				batch.DrawString(levelFont, textString2, new Vector2(x2, y2), Color.White);
+			}
 			else
 			{
 

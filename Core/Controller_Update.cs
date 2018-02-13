@@ -16,13 +16,22 @@ namespace MonoRoids.Core
 		public void Update(GameCore game, World world, GameTime gameTime)
 		{
 			var delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-			Input(game, world, delta);
-			UpdateShip(world.Ship, delta);
-			UpdateLasers(world.Lasers, delta);
-			UpdateAsteroids(world.Asteroids, delta);
-			ProcessCollisions(world);
-			UpdateExplosions(world.Explosions, delta);
-			if (AreAllAsteroidsDestroyed(world.Asteroids)) world.TransitionToNewLevel = true;
+			if (world.GameOver == true)
+			{
+				if(Keyboard.GetState().IsKeyDown(Keys.Enter))
+				{
+					game.UnloadGame();
+				}
+			}
+			else { 
+				Input(game, world, delta);
+				UpdateShip(world.Ship, delta);
+				UpdateLasers(world.Lasers, delta);
+				UpdateAsteroids(world.Asteroids, delta);
+				ProcessCollisions(world);
+				UpdateExplosions(world.Explosions, delta);
+				if (AreAllAsteroidsDestroyed(world.Asteroids)) world.TransitionToNewLevel = true;
+			}
 		}
 
 		private void Input(GameCore game, World world, float delta)
@@ -139,14 +148,15 @@ namespace MonoRoids.Core
 				if (shipHitBox.Intersects(asteroid.GetHitBox()))
 				{
 					world.Lives -= 1;
-					if (world.Lives > 0)
+					if (world.Lives < 0)
 					{
 						world.GameOver = true;
 					}
 					else
 					{
-						world.Ship.Respawn();
+						world.ReloadingLevel = true;
 					}
+					break;
 				}
 			}
 		}
@@ -182,7 +192,7 @@ namespace MonoRoids.Core
 
 		private void UpdateShip(Ship ship, float delta)
 		{
-			ship.Position += (ship.Velocity * delta);
+			ship.Update(delta);
 		}
 
 		private void UpdateLasers(Bag<Laser> lasers, float delta)

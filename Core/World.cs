@@ -31,6 +31,7 @@ namespace MonoRoids.Core
 		public Texture2D ExplosionTex { get; set; }
 
 		public bool TransitionToNewLevel { get; set; }
+		public bool ReloadingLevel { get; set; }
 		public float TransitionTime = 2f;
 		private float _transitionTimer = 0f;
 
@@ -102,7 +103,19 @@ namespace MonoRoids.Core
 			{
 				_transitionTimer = 0;
 				GenerateLevel();
+				Level += 1;
 				TransitionToNewLevel = false;
+			}
+		}
+
+		public void ReloadLevel(float delta)
+		{
+			_transitionTimer += delta;
+			if (_transitionTimer >= TransitionTime)
+			{
+				_transitionTimer = 0;
+				GenerateLevel();
+				ReloadingLevel = false;
 			}
 		}
 
@@ -113,7 +126,6 @@ namespace MonoRoids.Core
 
 		private void GenerateLevel()
 		{
-			Level += 1;
 			var maxAsteroids = Level * 1.5;
 
 			for(int i = 0; i < maxAsteroids; i++)
@@ -121,12 +133,14 @@ namespace MonoRoids.Core
 				var asteroid = new Asteroid();
 				asteroid.GenerateLargeAsteroid(LargeAsteroidTextures, Ship, Random, GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
 				Asteroids.Add(asteroid);
+				Ship.Respawn();
 			}
 		}
 
 		public void Update(GameCore game, GameTime gameTime)
 		{
 			if (TransitionToNewLevel) TransitionLevel((float)gameTime.ElapsedGameTime.TotalSeconds);
+			else if (ReloadingLevel) ReloadLevel((float)gameTime.ElapsedGameTime.TotalSeconds);
 			else Updater.Update(game, this, gameTime);
 		}
 		

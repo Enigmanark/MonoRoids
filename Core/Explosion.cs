@@ -35,7 +35,7 @@ namespace MonoRoids.Core
 			{
 				_timer = 0;
 				frame += 1;
-				if (frame == 9) destroy = true;
+				if (frame > frames) destroy = true;
 			}
 		}
 

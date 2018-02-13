@@ -82,12 +82,19 @@ namespace MonoRoids.Core
 
 			if(this.GetHitBox().Intersects(ship.GetHitBox()))
 			{
-				var dir = random.Next(0, 1);
-				if (dir == 0)
+				var dirX = random.Next(0, 1);
+				if (dirX == 0)
 				{
 					Position = new Vector2(Position.X - _asteroidOffset, Position.Y);
 				}
 				else Position = new Vector2(Position.X + _asteroidOffset, Position.Y);
+
+				var dirY = random.Next(0, 1);
+				if (dirY == 0)
+				{
+					Position = new Vector2(Position.X, Position.Y + _asteroidOffset);
+				}
+				else Position = new Vector2(Position.X, Position.Y - _asteroidOffset);
 			}
 
 			//Set rotation velocity
