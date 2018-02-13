@@ -17,6 +17,7 @@ namespace MonoRoids
 		BoxingViewportAdapter videoAdapter { get; set; }
 		public GraphicsDeviceManager Graphics { get; }
 		SpriteBatch spriteBatch;
+		public int GameState { get; set; }
 		World World;
 
 		public GameCore()
@@ -35,26 +36,25 @@ namespace MonoRoids
 			//Init video adapter
 			videoAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-			//Init world
-			World = new World();
-			World.Init(videoAdapter);
+			//Set gamestate to 0 for titlescreen
+			GameState = 0;
 
 			base.Initialize();
         }
 
-		protected void PostInit()
+		//Only run on Start game
+		protected void LoadGame()
 		{
-
-			World.PostInit(SCREEN_WIDTH, SCREEN_HEIGHT);
+			//Init world
+			World = new World();
+			World.Init(videoAdapter);
+			World.LoadContent(this);
+			World.PostInit();
 		}
 
 		protected override void LoadContent()
         {
 			spriteBatch = new SpriteBatch(GraphicsDevice);
-			World.LoadContent(this);
-
-			//Run post initialization
-			PostInit();
         }
 
         protected override void UnloadContent()
@@ -64,7 +64,7 @@ namespace MonoRoids
 
         protected override void Update(GameTime gameTime)
         {
-			World.Update(gameTime);
+			if(GameState == 1) World.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -73,7 +73,7 @@ namespace MonoRoids
         {
 			GraphicsDevice.Clear(Color.Black);
 
-			World.Draw(spriteBatch, gameTime);
+			if(GameState == 1) World.Draw(spriteBatch, gameTime);
 
             base.Draw(gameTime);
         }

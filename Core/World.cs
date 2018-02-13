@@ -87,12 +87,12 @@ namespace MonoRoids.Core
 			Drawer.LoadContent(game);
 		}
 
-		public void PostInit(int SCREEN_WIDTH, int SCREEN_HEIGHT)
+		public void PostInit()
 		{
 			//Place asteroids and set rotation velocity
 			foreach (Asteroid asteroid in Asteroids)
 			{
-				asteroid.PostInit(LargeAsteroidTextures, Random, SCREEN_WIDTH, SCREEN_HEIGHT);
+				asteroid.PostInit(LargeAsteroidTextures, Random, GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
 			}
 		}
 
