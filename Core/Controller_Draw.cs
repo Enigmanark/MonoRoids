@@ -21,7 +21,8 @@ namespace MonoRoids.Core
 			batch.Begin(transformMatrix: camera.GetViewMatrix());
 
 			//Draw background
-			
+			batch.Draw(world.Background, Vector2.Zero, Color.White);
+
 			//Draw asteroids
 			foreach(Asteroid asteroid in world.Asteroids)
 			{

@@ -27,6 +27,7 @@ namespace MonoRoids.Core
 		public Bag<Texture2D> LargeAsteroidTextures { get; set; }
 		public Bag<Texture2D> SmallAsteroidTextures { get; set; }
 		public Texture2D LaserTex { get; set; }
+		public Texture2D Background { get; set; }
 
 		public void Init(BoxingViewportAdapter adapter)
 		{
@@ -79,6 +80,9 @@ namespace MonoRoids.Core
 
 			//Load laser texture
 			LaserTex = game.Content.Load<Texture2D>("laser");
+
+			//Load background
+			Background = game.Content.Load<Texture2D>("star_background1");
 
 			Drawer.LoadContent(game);
 		}
