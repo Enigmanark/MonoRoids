@@ -11,13 +11,13 @@ namespace MonoRoids.Core
 	{
 		public int BigAsteroidWorth = 100;
 		public int SmallAsteroidWorth = 50;
-		int _maxAsteroids = 5;
 		public bool GameOver { get; set; }
 		public int Score { get; set; }
 		public int Lives { get; set; }
 		public int Level { get; set; }
 		public Bag<Asteroid> Asteroids { get; set; }
 		public Bag<Laser> Lasers { get; set; }
+		public Bag<Explosion> Explosions { get; set; }
 		public Random Random { get; set; }
 		public Ship Ship { get; set; }
 
@@ -28,6 +28,7 @@ namespace MonoRoids.Core
 		public Bag<Texture2D> SmallAsteroidTextures { get; set; }
 		public Texture2D LaserTex { get; set; }
 		public Texture2D Background { get; set; }
+		public Texture2D ExplosionTex { get; set; }
 
 		public void Init(BoxingViewportAdapter adapter)
 		{
@@ -50,6 +51,9 @@ namespace MonoRoids.Core
 			//Init laser bag
 			Lasers = new Bag<Laser>();
 
+			//Init explosion bag
+			Explosions = new Bag<Explosion>();
+
 			//Init large asteroid textures bag
 			LargeAsteroidTextures = new Bag<Texture2D>();
 
@@ -60,13 +64,6 @@ namespace MonoRoids.Core
 			Score = 0;
 			Lives = 3;
 			Level = 1;
-
-			//Init asteroids
-			for (int i = 0; i < _maxAsteroids; i++)
-			{
-				Asteroid asteroid = new Asteroid();
-				Asteroids.Add(asteroid);
-			}
 
 		}
 
@@ -88,19 +85,28 @@ namespace MonoRoids.Core
 			//Load background
 			Background = game.Content.Load<Texture2D>("star_background1");
 
+			//Load explosion texture
+			ExplosionTex = game.Content.Load<Texture2D>("free_explosion_1_128x128");
+
 			Drawer.LoadContent(game);
 		}
 
 		public void PostInit()
 		{
-			//Place asteroids and set rotation velocity
-			foreach (Asteroid asteroid in Asteroids)
-			{
-				asteroid.PostInit(LargeAsteroidTextures, Random, GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
-			}
+			GenerateLevel();
 		}
 
+		private void GenerateLevel()
+		{
+			var maxAsteroids = Level * 1.5;
 
+			for(int i = 0; i < maxAsteroids; i++)
+			{
+				var asteroid = new Asteroid();
+				asteroid.GenerateLargeAsteroid(LargeAsteroidTextures, Random, GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
+				Asteroids.Add(asteroid);
+			}
+		}
 
 		public void Update(GameTime gameTime)
 		{

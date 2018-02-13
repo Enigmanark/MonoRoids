@@ -20,6 +20,7 @@ namespace MonoRoids.Core
 			UpdateLasers(world.Lasers, delta);
 			UpdateAsteroids(world.Asteroids, delta);
 			ProcessCollisions(world);
+			UpdateExplosions(world.Explosions, delta);
 		}
 
 		private void Input(World world, float delta)
@@ -93,21 +94,31 @@ namespace MonoRoids.Core
 					//If the laser hit the asteroid
 					if (laserHitBox.Intersects(asteroidHitBox))
 					{
+						//If it was a big asteroid
 						if (asteroid.Type == 1)
 						{
+							//Make an explosion
+							world.Explosions.Add(new Explosion(world.ExplosionTex, asteroid.Position));
+
+							//Destroy the big asteroid and the laser and create 2 small asteroids
 							world.Asteroids.Remove(asteroid);
 							world.Lasers.Remove(laser);
 							var smallAsteroid1 = new Asteroid();
-							smallAsteroid1.InitSmallAsteroid(world.SmallAsteroidTextures, world.Random, asteroid.Position);
+							smallAsteroid1.GenerateSmallAsteroid(world.SmallAsteroidTextures, world.Random, asteroid.Position);
 							var smallAsteroid2 = new Asteroid();
-							smallAsteroid2.InitSmallAsteroid(world.SmallAsteroidTextures, world.Random, asteroid.Position);
+							smallAsteroid2.GenerateSmallAsteroid(world.SmallAsteroidTextures, world.Random, asteroid.Position);
 							world.Asteroids.Add(smallAsteroid1);
 							world.Asteroids.Add(smallAsteroid2);
 							world.Score += world.BigAsteroidWorth;
 							break;
 						}
+						//If it was a small asteroid
 						else if (asteroid.Type == 2)
 						{
+							//Make an explosion
+							world.Explosions.Add(new Explosion(world.ExplosionTex, asteroid.Position));
+
+							//Destroy the small asteroid and the laser
 							world.Asteroids.Remove(asteroid);
 							world.Lasers.Remove(laser);
 							world.Score += world.SmallAsteroidWorth;
@@ -132,6 +143,18 @@ namespace MonoRoids.Core
 					{
 						world.Ship.Respawn();
 					}
+				}
+			}
+		}
+
+		private void UpdateExplosions(Bag<Explosion> explosions, float delta)
+		{
+			foreach(Explosion explosion in explosions)
+			{
+				explosion.Update(delta);
+				if(explosion.destroy)
+				{
+					explosions.Remove(explosion);
 				}
 			}
 		}

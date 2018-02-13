@@ -34,7 +34,7 @@ namespace MonoRoids.Core
 			else if (Position.Y < 0) Position = new Vector2(Position.X, GameCore.SCREEN_HEIGHT);
 		}
 
-		public void InitSmallAsteroid(Bag<Texture2D> smallAsteroidTextures, Random random, Vector2 position)
+		public void GenerateSmallAsteroid(Bag<Texture2D> smallAsteroidTextures, Random random, Vector2 position)
 		{
 			//Init type
 			Type = 2;
@@ -62,7 +62,7 @@ namespace MonoRoids.Core
 			Origin = new Vector2(AsteroidTexture.Width / 2, AsteroidTexture.Height / 2);
 		}
 
-		public void PostInit(Bag<Texture2D> largeAsteroidTextures, Random random, int ScreenWidth, int ScreenHeight)
+		public void GenerateLargeAsteroid(Bag<Texture2D> largeAsteroidTextures, Random random, int ScreenWidth, int ScreenHeight)
 		{
 			//Init type
 			Type = 1;

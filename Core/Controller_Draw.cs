@@ -38,6 +38,12 @@ namespace MonoRoids.Core
 			//Draw ship
 			world.Ship.Draw(batch, gameTime);
 
+			//Draw explosions
+			foreach(Explosion explosion in world.Explosions)
+			{
+				explosion.Draw(batch);
+			}
+
 			//draw score
 			batch.DrawString(Mono10, "Score: " + world.Score, new Vector2(10, 0), Color.White);
 
