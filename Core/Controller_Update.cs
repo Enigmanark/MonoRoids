@@ -84,8 +84,7 @@ namespace MonoRoids.Core
 			{
 				var xVelocity = (float)(Math.Cos(world.Ship.Rotation) * _laserSpeed);
 				var yVelocity = (float)(Math.Sin(world.Ship.Rotation) * _laserSpeed);
-				var laser = new Laser(world.LaserSnd, world.Ship.Position, world.Ship.Rotation, new Vector2(xVelocity, yVelocity));
-				laser.LoadContent(world);
+				var laser = new Laser(world.LaserTex, world.LaserSnd, world.Ship.Position, world.Ship.Rotation, new Vector2(xVelocity, yVelocity));
 				world.Lasers.Add(laser);
 				_canFire = false;
 			}

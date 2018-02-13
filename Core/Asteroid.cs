@@ -63,8 +63,10 @@ namespace MonoRoids.Core
 			Origin = new Vector2(AsteroidTexture.Width / 2, AsteroidTexture.Height / 2);
 		}
 
-		public void GenerateLargeAsteroid(Bag<Texture2D> largeAsteroidTextures, Ship ship, Random random, int ScreenWidth, int ScreenHeight)
+		public void GenerateLargeAsteroid(Bag<Texture2D> largeAsteroidTextures, Ship ship, Random random)
 		{
+			var ScreenWidth = GameCore.SCREEN_WIDTH;
+			var ScreenHeight = GameCore.SCREEN_HEIGHT;
 			//Init type
 			Type = 1;
 

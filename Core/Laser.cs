@@ -14,19 +14,15 @@ namespace MonoRoids.Core
 		public Texture2D LaserTex { get; set; }
 		public SoundEffect Effect { get; set; }
 
-		public Laser(SoundEffect effect, Vector2 position, float rotation, Vector2 velocity)
+		public Laser(Texture2D texture, SoundEffect effect, Vector2 position, float rotation, Vector2 velocity)
 		{
 			Position = position;
 			Velocity = velocity;
 			Rotation = rotation;
-			effect.Play();
-		}
-
-		public void LoadContent(World world)
-		{
-			LaserTex = world.LaserTex;
+			LaserTex = texture;
 			SourceRect = new Rectangle(0, 0, LaserTex.Width, LaserTex.Height);
 			Origin = new Vector2(LaserTex.Width / 2, LaserTex.Height / 2);
+			effect.Play();
 		}
 
 		public void Draw(SpriteBatch batch, GameTime gameTime)
