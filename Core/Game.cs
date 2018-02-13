@@ -24,7 +24,8 @@ namespace MonoRoids
 		SpriteBatch spriteBatch;
 		public int GameState { get; set; }
 		World World;
-
+		SpriteFont titleFont;
+		Texture2D titleTexture;
 		GuiManager _gui;
 		InputListenerComponent _inputManager;
 
@@ -70,6 +71,8 @@ namespace MonoRoids
 		protected override void LoadContent()
         {
 			spriteBatch = new SpriteBatch(GraphicsDevice);
+			titleTexture = Content.Load<Texture2D>("star_background1");
+			titleFont = Content.Load<SpriteFont>("TitleFont");
         }
 
         protected override void UnloadContent()
@@ -92,9 +95,18 @@ namespace MonoRoids
         protected override void Draw(GameTime gameTime)
         {
 			GraphicsDevice.Clear(Color.Black);
-
+			var titleString = "MonoRoids";
+			var titleX = (GameCore.WINDOW_WIDTH / 2) - (titleFont.MeasureString(titleString).X / 2);
+			var titleY = 100;
 			if (GameState == 1) World.Draw(spriteBatch, gameTime);
-			else if (GameState == 0) _gui.Draw(gameTime);
+			else if (GameState == 0)
+			{
+				spriteBatch.Begin();
+				spriteBatch.Draw(titleTexture, Vector2.Zero, Color.White);
+				spriteBatch.DrawString(titleFont, titleString, new Vector2(titleX, titleY), Color.White);
+				spriteBatch.End();
+				_gui.Draw(gameTime);
+			}
 
             base.Draw(gameTime);
         }
@@ -117,8 +129,8 @@ namespace MonoRoids
 			//Create buttons
 			var buttonWidth = 150;
 			var buttonHeight = 50;
-			var buttonX = (GameCore.SCREEN_WIDTH / 2) + (buttonWidth / 2);
-			var buttonY = (GameCore.SCREEN_HEIGHT / 2) + 50;
+			var buttonX = (GameCore.WINDOW_WIDTH / 2) - (buttonWidth / 2);
+			var buttonY = 200;
 			var buttonDivider = 100;
 			var StartButton = new GuiButtonControl
 			{
@@ -156,7 +168,7 @@ namespace MonoRoids
 
 		private void StartButtonPressed(object Sender, EventArgs e)
 		{
-			Debug.WriteLine("Start clicked!");
+			LoadGame();
 		}
 
 		private void HighScoresButtonPressed(object Sender, EventArgs e)

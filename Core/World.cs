@@ -35,7 +35,6 @@ namespace MonoRoids.Core
 			Drawer = new Controller_Draw();
 			Updater = new Controller_Update();
 
-
 			//Init drawer
 			Drawer.Init(adapter);
 
@@ -56,6 +55,11 @@ namespace MonoRoids.Core
 
 			//Init small asteroid textures bag
 			SmallAsteroidTextures = new Bag<Texture2D>();
+
+			//Init game vars
+			Score = 0;
+			Lives = 3;
+			Level = 1;
 
 			//Init asteroids
 			for (int i = 0; i < _maxAsteroids; i++)
