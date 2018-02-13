@@ -147,7 +147,7 @@ namespace MonoRoids.Core
 
 		public void Update(GameCore game, GameTime gameTime)
 		{
-			if (TransitionToNewLevel) TransitionLevel((float)gameTime.ElapsedGameTime.TotalSeconds);
+			if (TransitionToNewLevel && Explosions.Count == 0) TransitionLevel((float)gameTime.ElapsedGameTime.TotalSeconds);
 			else if (ReloadingLevel) ReloadLevel((float)gameTime.ElapsedGameTime.TotalSeconds);
 			else Updater.Update(game, this, gameTime);
 		}
