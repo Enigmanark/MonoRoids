@@ -7,7 +7,7 @@ namespace MonoRoids.Core
 	{
 		Texture2D shipTexture;
 		public int TurnSpeed { get; }
-		private bool _invulnerable = true;
+		public bool Invulnerable = true;
 		private float _invulnerableTime = 3.5f;
 		private float _invulnerableTimer = 0f;
 		public Ship()
@@ -19,12 +19,12 @@ namespace MonoRoids.Core
 		public void Update(float delta)
 		{
 			Position += (Velocity * delta);
-			if(_invulnerable)
+			if(Invulnerable)
 			{
 				_invulnerableTimer += delta;
 				if(_invulnerableTimer >= _invulnerableTime)
 				{
-					_invulnerable = false;
+					Invulnerable = false;
 					_invulnerableTimer = 0f;
 				}
 			}
@@ -34,7 +34,7 @@ namespace MonoRoids.Core
 		{
 			Position = new Vector2(GameCore.SCREEN_WIDTH / 2, GameCore.SCREEN_HEIGHT / 2);
 			Velocity = Vector2.Zero;
-			_invulnerable = true;
+			Invulnerable = true;
 		}
 
 		public void LoadContent(GameCore game)
@@ -48,7 +48,7 @@ namespace MonoRoids.Core
 
 		public void Draw(SpriteBatch batch, GameTime gameTime)
 		{
-			if(_invulnerable) batch.Draw(shipTexture, Position, SourceRect, Color.CadetBlue, Rotation, Origin, 1.0f, SpriteEffects.None, 1);
+			if(Invulnerable) batch.Draw(shipTexture, Position, SourceRect, Color.CadetBlue, Rotation, Origin, 1.0f, SpriteEffects.None, 1);
 			else batch.Draw(shipTexture, Position, SourceRect, Color.White, Rotation, Origin, 1.0f, SpriteEffects.None, 1);
 		}
 	}

@@ -82,8 +82,12 @@ namespace MonoRoids.Core
 			var maxY = ScreenHeight - AsteroidTexture.Height;
 			Position = new Vector2(random.Next(minX, maxX), random.Next(minY, maxY));
 
-			if(this.GetHitBox().Intersects(ship.GetHitBox()))
+			SourceRect = new Rectangle(0, 0, AsteroidTexture.Width, AsteroidTexture.Height);
+			Origin = new Vector2(AsteroidTexture.Width / 2, AsteroidTexture.Height / 2);
+
+			if (this.GetHitBox().Intersects(ship.GetHitBox()))
 			{
+				Debug.WriteLine("Moved asteroid");
 				var dirX = random.Next(0, 1);
 				if (dirX == 0)
 				{
@@ -109,9 +113,6 @@ namespace MonoRoids.Core
 			int yDir = random.Next(-1, 1);
 
 			Velocity = new Vector2(xDir, yDir);
-
-			SourceRect = new Rectangle(0, 0, AsteroidTexture.Width, AsteroidTexture.Height);
-			Origin = new Vector2(AsteroidTexture.Width / 2, AsteroidTexture.Height / 2);
 		}
 
 		public void Draw(SpriteBatch batch, GameTime gameTime)

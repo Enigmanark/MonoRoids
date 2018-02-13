@@ -71,7 +71,7 @@ namespace MonoRoids.Core
 			//Init game vars
 			Score = 0;
 			Lives = 3;
-			Level = 0;
+			Level = 6;
 
 		}
 
@@ -111,8 +111,8 @@ namespace MonoRoids.Core
 			if(_transitionTimer >= TransitionTime)
 			{
 				_transitionTimer = 0;
-				GenerateLevel();
 				Level += 1;
+				GenerateLevel();
 				TransitionToNewLevel = false;
 			}
 		}
@@ -135,14 +135,13 @@ namespace MonoRoids.Core
 
 		private void GenerateLevel()
 		{
-			var maxAsteroids = Level * 1.5;
-
-			for(int i = 0; i < maxAsteroids; i++)
+			var maxAsteroids = Level * 1.2f;
+			Ship.Respawn();
+			for (int i = 0; i < maxAsteroids; i++)
 			{
 				var asteroid = new Asteroid();
-				asteroid.GenerateLargeAsteroid(LargeAsteroidTextures, Ship, Random, GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
+				asteroid.GenerateLargeAsteroid(LargeAsteroidTextures, Ship, Random);
 				Asteroids.Add(asteroid);
-				Ship.Respawn();
 			}
 		}
 

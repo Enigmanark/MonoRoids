@@ -142,20 +142,23 @@ namespace MonoRoids.Core
 
 			//Loop through asteroids to see if ship is hit
 			var shipHitBox = world.Ship.GetHitBox();
-			foreach (Asteroid asteroid in world.Asteroids)
+			if (!world.Ship.Invulnerable)
 			{
-				if (shipHitBox.Intersects(asteroid.GetHitBox()))
+				foreach (Asteroid asteroid in world.Asteroids)
 				{
-					world.Lives -= 1;
-					if (world.Lives < 0)
+					if (shipHitBox.Intersects(asteroid.GetHitBox()))
 					{
-						world.GameOver = true;
+						world.Lives -= 1;
+						if (world.Lives < 0)
+						{
+							world.GameOver = true;
+						}
+						else
+						{
+							world.ReloadingLevel = true;
+						}
+						break;
 					}
-					else
-					{
-						world.ReloadingLevel = true;
-					}
-					break;
 				}
 			}
 		}
