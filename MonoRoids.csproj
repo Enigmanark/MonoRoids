@@ -74,7 +74,8 @@
     <Compile Include="Core\Controller_Update.cs" />
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\Explosion.cs" />
-    <Compile Include="Core\Game.cs" />
+    <Compile Include="Core\GameCore.cs" />
+    <Compile Include="Core\HighScore.cs" />
     <Compile Include="Core\Laser.cs" />
     <Compile Include="Core\World.cs" />
     <Compile Include="Core\Ship.cs" />
@@ -100,8 +101,9 @@
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
