@@ -75,6 +75,7 @@
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\Explosion.cs" />
     <Compile Include="Core\GameCore.cs" />
+    <Compile Include="Core\GuiFactory.cs" />
     <Compile Include="Core\HighScore.cs" />
     <Compile Include="Core\Laser.cs" />
     <Compile Include="Core\World.cs" />

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.NuclexGui;
+using MonoGame.Extended.NuclexGui.Controls;
 using MonoGame.Extended.NuclexGui.Controls.Desktop;
 using MonoGame.Extended.ViewportAdapters;
 using MonoRoids.Core;
@@ -24,6 +25,7 @@ namespace MonoRoids
 		public static int STATE_GAME = 1;
 		public static int STATE_TITLE = 0;
 		public static int STATE_SCORES = 2;
+		public static int STATE_INPUTSCORE = 3;
 		BoxingViewportAdapter videoAdapter { get; set; }
 		private readonly GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
@@ -34,6 +36,7 @@ namespace MonoRoids
 		Texture2D titleTexture;
 		GuiManager titleGui;
 		GuiManager highScoresGui;
+		GuiManager inputHighScoreGui;
 		InputListenerComponent inputManager;
 		public List<HighScore> HighScoreData;
 		private int transitionTo = -1;
@@ -59,19 +62,23 @@ namespace MonoRoids
 
 		protected override void Initialize()
         {
+			base.Initialize();
+
 			//Init video adapter
 			videoAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 			//Set mouse to visible
 			IsMouseVisible = true;
 
-			//Set gamestate to 0 for titlescreen
-			ChangeState(0);
-
 			//Get high scores
 			HighScoreData = GetHighScores();
 
-			base.Initialize();
+			//Create input manager for GUI
+			inputManager = new InputListenerComponent(this);
+
+			//Set gamestate to 0 for titlescreen
+			ChangeState(GameCore.STATE_TITLE);
+
         }
 
 		//Unload game
@@ -115,7 +122,7 @@ namespace MonoRoids
 				UnloadGame();
 				GameState = GameCore.STATE_TITLE;
 				if(highScoresGui != null)highScoresGui.Dispose();
-				CreateTitleGui();
+				titleGui = GuiFactory.CreateTitleGui(this, titleGui, inputManager);
 			}
 			else if(state == GameCore.STATE_GAME)
 			{
@@ -128,7 +135,7 @@ namespace MonoRoids
 				UnloadGame();
 				GameState = GameCore.STATE_SCORES;
 				titleGui.Dispose();
-				CreateHighScoresGui();
+				highScoresGui = GuiFactory.CreateHighScoresGui(this, highScoresGui, inputManager);
 				//SortHighScores();
 			}
 		}
@@ -145,6 +152,7 @@ namespace MonoRoids
 				if(transitionTo == GameCore.STATE_SCORES)
 				{
 					ChangeState(GameCore.STATE_SCORES);
+					transitionTo = -1;
 				}
 			}
 			//Update high scores if in high scores
@@ -154,7 +162,8 @@ namespace MonoRoids
 				highScoresGui.Update(gameTime);
 				if(transitionTo == GameCore.STATE_TITLE)
 				{
-					ChangeState(GameCore.STATE_TITLE); 
+					ChangeState(GameCore.STATE_TITLE);
+					transitionTo = -1;
 				}
 			}
             base.Update(gameTime);
@@ -199,105 +208,35 @@ namespace MonoRoids
             base.Draw(gameTime);
         }
 
-		private void CreateHighScoresGui()
-		{
-			//Create gui
-			var guiInputService = new GuiInputService(inputManager);
-			highScoresGui = new GuiManager(Services, guiInputService);
-
-			highScoresGui.Screen = new GuiScreen(GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
-
-			highScoresGui.Screen.Desktop.Bounds = new UniRectangle(new UniScalar(0f, 0), new UniScalar(0f, 0), new UniScalar(1f, 0), new UniScalar(1f, 0));
-
-			//Create back button
-			var buttonWidth = 150;
-			var buttonHeight = 50;
-			var buttonX = (GameCore.WINDOW_WIDTH / 2) - (buttonWidth / 2);
-			var buttonY = (GameCore.WINDOW_HEIGHT - 70);
-
-			var backButton = new GuiButtonControl
-			{
-				Name = "Back",
-				Bounds = new UniRectangle(new UniScalar(buttonX), new UniScalar(buttonY), new UniScalar(buttonWidth), new UniScalar(buttonHeight)),
-				Text = "Back"
-			};
-
-			backButton.Pressed += BackButtonPressed;
-			highScoresGui.Screen.Desktop.Children.Add(backButton);
-			highScoresGui.Initialize();
-
-		}
-
-		private void BackButtonPressed(object Sender, EventArgs e)
+		public void BackButtonPressed(object Sender, EventArgs e)
 		{
 			transitionTo = GameCore.STATE_TITLE;
 		}
 
-		private void CreateTitleGui()
-		{
-			//Create input manager for GUI
-			inputManager = new InputListenerComponent(this);
-			//Create GUI
-			var guiInputService = new GuiInputService(inputManager);
-			titleGui = new GuiManager(Services, guiInputService);
-
-			titleGui.Screen = new GuiScreen(GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
-
-			titleGui.Screen.Desktop.Bounds = new UniRectangle(new UniScalar(0f, 0), new UniScalar(0f, 0), new UniScalar(1f, 0), new UniScalar(1f, 0));
-
-			titleGui.Initialize();
-
-			//Create buttons
-			var buttonWidth = 150;
-			var buttonHeight = 50;
-			var buttonX = (GameCore.WINDOW_WIDTH / 2) - (buttonWidth / 2);
-			var buttonY = 200;
-			var buttonDivider = 100;
-			var StartButton = new GuiButtonControl
-			{
-				Name = "Start",
-				Bounds = new UniRectangle(new UniScalar(buttonX), new UniScalar(buttonY), new UniScalar(buttonWidth), new UniScalar(buttonHeight)),
-				Text = "Start"
-			};
-
-			var HighScoresButton = new GuiButtonControl
-			{
-				Name = "HighScores",
-				Bounds = new UniRectangle(new UniScalar(buttonX), new UniScalar(buttonY + buttonDivider),
-					new UniScalar(buttonWidth), new UniScalar(buttonHeight)),
-				Text = "High Scores"
-			};
-
-			var ExitButton = new GuiButtonControl
-			{
-				Name = "Exit",
-				Bounds = new UniRectangle(new UniScalar(buttonX), new UniScalar(buttonY + (buttonDivider * 2)),
-					new UniScalar(buttonWidth), new UniScalar(buttonHeight)),
-				Text = "Exit"
-			};
-
-			//Add functon to pressed
-			StartButton.Pressed += StartButtonPressed;
-			HighScoresButton.Pressed += HighScoresButtonPressed;
-			ExitButton.Pressed += ExitButtonPressed;
-
-			//Add buttons to gui
-			titleGui.Screen.Desktop.Children.Add(StartButton);
-			titleGui.Screen.Desktop.Children.Add(HighScoresButton);
-			titleGui.Screen.Desktop.Children.Add(ExitButton);
-		}
-
-		private void StartButtonPressed(object Sender, EventArgs e)
+		public void StartButtonPressed(object Sender, EventArgs e)
 		{
 			ChangeState(GameCore.STATE_GAME);
 		}
 
-		private void HighScoresButtonPressed(object Sender, EventArgs e)
+		public void HighScoresButtonPressed(object Sender, EventArgs e)
 		{
 			transitionTo = GameCore.STATE_SCORES;
 		}
 
-		private void SortHighScores()
+		public void SubmitButtonPressed(object Sender, EventArgs e)
+		{
+			foreach(GuiControl guiC in inputHighScoreGui.Screen.Desktop.Children)
+			{
+				if(guiC.Name == "Text Input")
+				{
+					var highScoreData = new HighScore(guiC.Name, World.Score);
+					HighScoreData.Add(highScoreData);
+					SortHighScores();
+				}
+			}
+		}
+
+		public void SortHighScores()
 		{
 			HighScoreData.Sort(delegate (HighScore x, HighScore y)
 			{
@@ -306,7 +245,7 @@ namespace MonoRoids
 		}
 
 		//Exit code, writes high scores back to highscore file and then closes application
-		private void ExitButtonPressed(object Sender, EventArgs e)
+		public void ExitButtonPressed(object Sender, EventArgs e)
 		{
 			SortHighScores();
 			string json = JsonConvert.SerializeObject(HighScoreData.ToArray());
