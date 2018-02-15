@@ -30,7 +30,7 @@ namespace MonoRoids.Core
 			var backButton = new GuiButtonControl
 			{
 				Name = "Back",
-				Bounds = new UniRectangle(new UniScalar(buttonX), new UniScalar(buttonY - 100), new UniScalar(buttonWidth), new UniScalar(buttonHeight)),
+				Bounds = new UniRectangle(new UniScalar(buttonX), new UniScalar(buttonY), new UniScalar(buttonWidth), new UniScalar(buttonHeight)),
 				Text = "Back"
 			};
 
@@ -95,7 +95,7 @@ namespace MonoRoids.Core
 			return titleGui;
 		}
 
-		public static void CreateInputHighScoreGui(GameCore game, GuiManager inputHighScoreGui, InputListenerComponent inputManager)
+		public static GuiManager CreateInputHighScoreGui(GameCore game, GuiManager inputHighScoreGui, InputListenerComponent inputManager)
 		{
 			//Create gui
 			var guiInputService = new GuiInputService(inputManager);
@@ -109,7 +109,7 @@ namespace MonoRoids.Core
 			var buttonWidth = 150;
 			var buttonHeight = 50;
 			var buttonX = (GameCore.WINDOW_WIDTH / 2) - (buttonWidth / 2);
-			var buttonY = (GameCore.WINDOW_HEIGHT - 70);
+			var buttonY = (GameCore.WINDOW_HEIGHT - 200);
 
 			var submitButton = new GuiButtonControl
 			{
@@ -118,10 +118,10 @@ namespace MonoRoids.Core
 				Text = "Submit"
 			};
 
-			var inputWidth = 150;
-			var inputHeight = 25;
+			var inputWidth = 200;
+			var inputHeight = 20;
 			var inputX = (GameCore.WINDOW_WIDTH / 2) - (inputWidth / 2);
-			var inputY = (GameCore.WINDOW_HEIGHT - 100);
+			var inputY = (GameCore.WINDOW_HEIGHT - 400);
 
 			var textInput = new GuiInputControl
 			{
@@ -135,6 +135,8 @@ namespace MonoRoids.Core
 			inputHighScoreGui.Screen.Desktop.Children.Add(submitButton);
 			inputHighScoreGui.Screen.Desktop.Children.Add(textInput);
 			inputHighScoreGui.Initialize();
+
+			return inputHighScoreGui;
 		}
 	}
 }

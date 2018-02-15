@@ -20,7 +20,7 @@ namespace MonoRoids.Core
 			{
 				if(Keyboard.GetState().IsKeyDown(Keys.Enter))
 				{
-					game.ChangeState(GameCore.STATE_TITLE);
+					game.ChangeState(GameCore.STATE_GAMEOVER);
 				}
 			}
 			else { 
@@ -37,7 +37,7 @@ namespace MonoRoids.Core
 		private void Input(GameCore game, World world, float delta)
 		{
 			//Return to menu?
-			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) game.ChangeState(GameCore.STATE_TITLE);
+			if (Keyboard.GetState().IsKeyDown(Keys.Escape)) game.ChangeState(GameCore.STATE_GAMEOVER);
 
 			//countdown fire timer if _canFire is false
 			if (!_canFire)

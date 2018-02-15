@@ -26,6 +26,8 @@ namespace MonoRoids
 		public static int STATE_TITLE = 0;
 		public static int STATE_SCORES = 2;
 		public static int STATE_INPUTSCORE = 3;
+		public static int STATE_GAMEOVER = 4;
+
 		BoxingViewportAdapter videoAdapter { get; set; }
 		private readonly GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
@@ -40,6 +42,7 @@ namespace MonoRoids
 		InputListenerComponent inputManager;
 		public List<HighScore> HighScoreData;
 		private int transitionTo = -1;
+		private int score;
 
 		public GameCore()
         {
@@ -53,11 +56,16 @@ namespace MonoRoids
 
 		private List<HighScore> GetHighScores()
 		{
-			StreamReader r = new StreamReader("Content/highscores.json");
-			var json = r.ReadToEnd();
-			var data = JsonConvert.DeserializeObject<List<HighScore>>(json);
-			return data;
-
+			try
+			{
+				StreamReader r = new StreamReader("Content/highscores.json");
+				var json = r.ReadToEnd();
+				var data = JsonConvert.DeserializeObject<List<HighScore>>(json);
+				return data;
+			} catch(System.IO.FileNotFoundException)
+			{
+				return new List<HighScore>();
+			}
 		}
 
 		protected override void Initialize()
@@ -117,26 +125,55 @@ namespace MonoRoids
 
 		public void ChangeState(int state)
 		{
-			if(state == GameCore.STATE_TITLE)
+			//Title screen state
+			if (state == GameCore.STATE_TITLE)
 			{
 				UnloadGame();
 				GameState = GameCore.STATE_TITLE;
-				if(highScoresGui != null)highScoresGui.Dispose();
+				if (highScoresGui != null) highScoresGui.Dispose();
 				titleGui = GuiFactory.CreateTitleGui(this, titleGui, inputManager);
 			}
-			else if(state == GameCore.STATE_GAME)
+			//Play the game state
+			else if (state == GameCore.STATE_GAME)
 			{
 				LoadGame();
 				GameState = GameCore.STATE_GAME;
 				titleGui.Dispose();
 			}
-			else if(state == GameCore.STATE_SCORES)
+			//Show the high scores state
+			else if (state == GameCore.STATE_SCORES)
 			{
 				UnloadGame();
 				GameState = GameCore.STATE_SCORES;
 				titleGui.Dispose();
+				if(inputHighScoreGui != null) inputHighScoreGui.Dispose();
 				highScoresGui = GuiFactory.CreateHighScoresGui(this, highScoresGui, inputManager);
-				//SortHighScores();
+				SortHighScores();
+			}
+			//Game over state
+			else if (state == GameCore.STATE_GAMEOVER)
+			{
+				score = World.Score;
+				UnloadGame();
+				var addTo = false;
+				foreach (HighScore scoreData in HighScoreData)
+				{
+					if (score > scoreData.Score)
+					{
+						addTo = true;
+						break;
+					}
+				}
+				if(HighScoreData.Count < 10) addTo = true;
+				if (addTo) ChangeState(GameCore.STATE_INPUTSCORE);
+				else ChangeState(GameCore.STATE_SCORES);
+			}
+
+			else if(state == GameCore.STATE_INPUTSCORE)
+			{
+				GameState = GameCore.STATE_INPUTSCORE;
+				inputHighScoreGui = GuiFactory.CreateInputHighScoreGui(this, inputHighScoreGui, inputManager);
+
 			}
 		}
 
@@ -166,6 +203,17 @@ namespace MonoRoids
 					transitionTo = -1;
 				}
 			}
+			//Update gui input if got new high score
+			else if(GameState == GameCore.STATE_INPUTSCORE)
+			{
+				inputManager.Update(gameTime);
+				inputHighScoreGui.Update(gameTime);
+				if(transitionTo == GameCore.STATE_SCORES)
+				{
+					ChangeState(GameCore.STATE_SCORES);
+					transitionTo = -1;
+				}
+			}
             base.Update(gameTime);
         }
 
@@ -175,7 +223,10 @@ namespace MonoRoids
 			var titleString = "MonoRoids";
 			var titleX = (GameCore.WINDOW_WIDTH / 2) - (titleFont.MeasureString(titleString).X / 2);
 			var titleY = 100;
-			if (GameState == 1) World.Draw(spriteBatch, gameTime);
+			//Draw world if ingame
+			if (GameState == GameCore.STATE_GAME) World.Draw(spriteBatch, gameTime);
+
+			//Draw title screen if state title
 			else if (GameState == GameCore.STATE_TITLE)
 			{
 				spriteBatch.Begin();
@@ -184,7 +235,7 @@ namespace MonoRoids
 				spriteBatch.End();
 				titleGui.Draw(gameTime);
 			}
-
+			//Draw score screen if state scores
 			else if(GameState == GameCore.STATE_SCORES)
 			{
 				spriteBatch.Begin();
@@ -192,7 +243,7 @@ namespace MonoRoids
 				int counter = 1;
 				int divider = 50;
 				int nameX = 200;
-				int y = 40;
+				int y = 0;
 				int scoreX = 500;
 
 				foreach (HighScore hs in HighScoreData)
@@ -204,7 +255,14 @@ namespace MonoRoids
 				spriteBatch.End();
 				highScoresGui.Draw(gameTime);
 			}
-
+			//Draw high score input
+			else if(GameState == GameCore.STATE_INPUTSCORE)
+			{
+				spriteBatch.Begin();
+				spriteBatch.Draw(titleTexture, Vector2.Zero, Color.White);
+				spriteBatch.End();
+				inputHighScoreGui.Draw(gameTime);
+			}
             base.Draw(gameTime);
         }
 
@@ -229,9 +287,13 @@ namespace MonoRoids
 			{
 				if(guiC.Name == "Text Input")
 				{
-					var highScoreData = new HighScore(guiC.Name, World.Score);
+					var textInput = (GuiInputControl)guiC;
+					var highScoreData = new HighScore(textInput.Text, score);
 					HighScoreData.Add(highScoreData);
 					SortHighScores();
+					if (HighScoreData.Count > 10) HighScoreData.RemoveRange(10, HighScoreData.Count - 10);
+					score = 0;
+					transitionTo = GameCore.STATE_SCORES;
 				}
 			}
 		}
@@ -250,6 +312,7 @@ namespace MonoRoids
 			SortHighScores();
 			string json = JsonConvert.SerializeObject(HighScoreData.ToArray());
 			System.IO.File.WriteAllText("Content/highscores.json", json);
+			UnloadContent();
 			Exit();
 		}
     }
