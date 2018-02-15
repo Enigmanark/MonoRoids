@@ -8,7 +8,6 @@ using MonoRoids.Core;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 
 namespace MonoRoids
@@ -22,6 +21,9 @@ namespace MonoRoids
 		public static int WINDOW_HEIGHT = 600;
 		public static int SCREEN_WIDTH = 480;
 		public static int SCREEN_HEIGHT = 300;
+		public static int STATE_GAME = 1;
+		public static int STATE_TITLE = 0;
+		public static int STATE_SCORES = 2;
 		BoxingViewportAdapter videoAdapter { get; set; }
 		private readonly GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
@@ -34,6 +36,7 @@ namespace MonoRoids
 		GuiManager highScoresGui;
 		InputListenerComponent inputManager;
 		public List<HighScore> HighScoreData;
+		private int transitionTo = -1;
 
 		public GameCore()
         {
@@ -62,11 +65,8 @@ namespace MonoRoids
 			//Set mouse to visible
 			IsMouseVisible = true;
 
-			//Init GUI
-			CreateGUI();
-
 			//Set gamestate to 0 for titlescreen
-			GameState = 0;
+			ChangeState(0);
 
 			//Get high scores
 			HighScoreData = GetHighScores();
@@ -78,7 +78,6 @@ namespace MonoRoids
 		public void UnloadGame()
 		{
 			World = null;
-			GameState = 0;
 			IsMouseVisible = true;
 		}
 
@@ -90,7 +89,6 @@ namespace MonoRoids
 			World.Init(videoAdapter);
 			World.LoadContent(this);
 			World.PostInit();
-			GameState = 1;
 			IsMouseVisible = false;
 		}
 
@@ -110,14 +108,54 @@ namespace MonoRoids
 			Content.Unload();
         }
 
+		public void ChangeState(int state)
+		{
+			if(state == GameCore.STATE_TITLE)
+			{
+				UnloadGame();
+				GameState = GameCore.STATE_TITLE;
+				if(highScoresGui != null)highScoresGui.Dispose();
+				CreateTitleGui();
+			}
+			else if(state == GameCore.STATE_GAME)
+			{
+				LoadGame();
+				GameState = GameCore.STATE_GAME;
+				titleGui.Dispose();
+			}
+			else if(state == GameCore.STATE_SCORES)
+			{
+				UnloadGame();
+				GameState = GameCore.STATE_SCORES;
+				titleGui.Dispose();
+				CreateHighScoresGui();
+				//SortHighScores();
+			}
+		}
+
         protected override void Update(GameTime gameTime)
         {
-			if (GameState == 1) World.Update(this, gameTime);
+			//Update game if ingame
+			if (GameState == GameCore.STATE_GAME) World.Update(this, gameTime);
 			//Update GUI if on title screen
-			else if (GameState == 0)
+			else if (GameState == GameCore.STATE_TITLE)
 			{
 				inputManager.Update(gameTime);
 				titleGui.Update(gameTime);
+				if(transitionTo == GameCore.STATE_SCORES)
+				{
+					ChangeState(GameCore.STATE_SCORES);
+				}
+			}
+			//Update high scores if in high scores
+			else if(GameState == GameCore.STATE_SCORES)
+			{
+				inputManager.Update(gameTime);
+				highScoresGui.Update(gameTime);
+				if(transitionTo == GameCore.STATE_TITLE)
+				{
+					ChangeState(GameCore.STATE_TITLE); 
+				}
 			}
             base.Update(gameTime);
         }
@@ -129,7 +167,7 @@ namespace MonoRoids
 			var titleX = (GameCore.WINDOW_WIDTH / 2) - (titleFont.MeasureString(titleString).X / 2);
 			var titleY = 100;
 			if (GameState == 1) World.Draw(spriteBatch, gameTime);
-			else if (GameState == 0)
+			else if (GameState == GameCore.STATE_TITLE)
 			{
 				spriteBatch.Begin();
 				spriteBatch.Draw(titleTexture, Vector2.Zero, Color.White);
@@ -138,7 +176,7 @@ namespace MonoRoids
 				titleGui.Draw(gameTime);
 			}
 
-			else if(GameState == 2)
+			else if(GameState == GameCore.STATE_SCORES)
 			{
 				spriteBatch.Begin();
 				spriteBatch.Draw(titleTexture, Vector2.Zero, Color.White);
@@ -155,16 +193,50 @@ namespace MonoRoids
 					counter++;
 				}
 				spriteBatch.End();
+				highScoresGui.Draw(gameTime);
 			}
 
             base.Draw(gameTime);
         }
 
-		private void CreateGUI()
+		private void CreateHighScoresGui()
+		{
+			//Create gui
+			var guiInputService = new GuiInputService(inputManager);
+			highScoresGui = new GuiManager(Services, guiInputService);
+
+			highScoresGui.Screen = new GuiScreen(GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
+
+			highScoresGui.Screen.Desktop.Bounds = new UniRectangle(new UniScalar(0f, 0), new UniScalar(0f, 0), new UniScalar(1f, 0), new UniScalar(1f, 0));
+
+			//Create back button
+			var buttonWidth = 150;
+			var buttonHeight = 50;
+			var buttonX = (GameCore.WINDOW_WIDTH / 2) - (buttonWidth / 2);
+			var buttonY = (GameCore.WINDOW_HEIGHT - 70);
+
+			var backButton = new GuiButtonControl
+			{
+				Name = "Back",
+				Bounds = new UniRectangle(new UniScalar(buttonX), new UniScalar(buttonY), new UniScalar(buttonWidth), new UniScalar(buttonHeight)),
+				Text = "Back"
+			};
+
+			backButton.Pressed += BackButtonPressed;
+			highScoresGui.Screen.Desktop.Children.Add(backButton);
+			highScoresGui.Initialize();
+
+		}
+
+		private void BackButtonPressed(object Sender, EventArgs e)
+		{
+			transitionTo = GameCore.STATE_TITLE;
+		}
+
+		private void CreateTitleGui()
 		{
 			//Create input manager for GUI
 			inputManager = new InputListenerComponent(this);
-
 			//Create GUI
 			var guiInputService = new GuiInputService(inputManager);
 			titleGui = new GuiManager(Services, guiInputService);
@@ -217,12 +289,12 @@ namespace MonoRoids
 
 		private void StartButtonPressed(object Sender, EventArgs e)
 		{
-			LoadGame();
+			ChangeState(GameCore.STATE_GAME);
 		}
 
 		private void HighScoresButtonPressed(object Sender, EventArgs e)
 		{
-			GameState = 2;
+			transitionTo = GameCore.STATE_SCORES;
 		}
 
 		private void SortHighScores()
