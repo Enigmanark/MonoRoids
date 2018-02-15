@@ -23,23 +23,24 @@ namespace MonoRoids
 		public static int SCREEN_WIDTH = 480;
 		public static int SCREEN_HEIGHT = 300;
 		BoxingViewportAdapter videoAdapter { get; set; }
-		private readonly GraphicsDeviceManager _graphics;
+		private readonly GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 		public int GameState { get; set; }
 		World World;
 		SpriteFont titleFont;
 		SpriteFont defaultFont;
 		Texture2D titleTexture;
-		GuiManager _gui;
-		InputListenerComponent _inputManager;
+		GuiManager titleGui;
+		GuiManager highScoresGui;
+		InputListenerComponent inputManager;
 		public List<HighScore> HighScoreData;
 
 		public GameCore()
         {
 
-            _graphics = new GraphicsDeviceManager(this);
-			_graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
-			_graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
+            graphics = new GraphicsDeviceManager(this);
+			graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
+			graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
             Content.RootDirectory = "Content";
 
 		}
@@ -115,8 +116,8 @@ namespace MonoRoids
 			//Update GUI if on title screen
 			else if (GameState == 0)
 			{
-				_inputManager.Update(gameTime);
-				_gui.Update(gameTime);
+				inputManager.Update(gameTime);
+				titleGui.Update(gameTime);
 			}
             base.Update(gameTime);
         }
@@ -134,23 +135,26 @@ namespace MonoRoids
 				spriteBatch.Draw(titleTexture, Vector2.Zero, Color.White);
 				spriteBatch.DrawString(titleFont, titleString, new Vector2(titleX, titleY), Color.White);
 				spriteBatch.End();
-				_gui.Draw(gameTime);
+				titleGui.Draw(gameTime);
 			}
 
 			else if(GameState == 2)
 			{
 				spriteBatch.Begin();
 				spriteBatch.Draw(titleTexture, Vector2.Zero, Color.White);
-				int counter = 0;
+				int counter = 1;
 				int divider = 50;
-				int nameX = 100;
-				int y = 50;
-				int scoreX = 250;
+				int nameX = 200;
+				int y = 40;
+				int scoreX = 500;
 
 				foreach (HighScore hs in HighScoreData)
 				{
-					spriteBatch.DrawString(defaultFont, hs.Name, )
+					spriteBatch.DrawString(defaultFont, hs.Name, new Vector2(nameX, y + (counter * divider)), Color.White);
+					spriteBatch.DrawString(defaultFont, hs.Score.ToString(), new Vector2(scoreX, y + (counter * divider)), Color.White);
+					counter++;
 				}
+				spriteBatch.End();
 			}
 
             base.Draw(gameTime);
@@ -159,17 +163,17 @@ namespace MonoRoids
 		private void CreateGUI()
 		{
 			//Create input manager for GUI
-			_inputManager = new InputListenerComponent(this);
+			inputManager = new InputListenerComponent(this);
 
 			//Create GUI
-			var guiInputService = new GuiInputService(_inputManager);
-			_gui = new GuiManager(Services, guiInputService);
+			var guiInputService = new GuiInputService(inputManager);
+			titleGui = new GuiManager(Services, guiInputService);
 
-			_gui.Screen = new GuiScreen(GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
+			titleGui.Screen = new GuiScreen(GameCore.SCREEN_WIDTH, GameCore.SCREEN_HEIGHT);
 
-			_gui.Screen.Desktop.Bounds = new UniRectangle(new UniScalar(0f, 0), new UniScalar(0f, 0), new UniScalar(1f, 0), new UniScalar(1f, 0));
+			titleGui.Screen.Desktop.Bounds = new UniRectangle(new UniScalar(0f, 0), new UniScalar(0f, 0), new UniScalar(1f, 0), new UniScalar(1f, 0));
 
-			_gui.Initialize();
+			titleGui.Initialize();
 
 			//Create buttons
 			var buttonWidth = 150;
@@ -206,9 +210,9 @@ namespace MonoRoids
 			ExitButton.Pressed += ExitButtonPressed;
 
 			//Add buttons to gui
-			_gui.Screen.Desktop.Children.Add(StartButton);
-			_gui.Screen.Desktop.Children.Add(HighScoresButton);
-			_gui.Screen.Desktop.Children.Add(ExitButton);
+			titleGui.Screen.Desktop.Children.Add(StartButton);
+			titleGui.Screen.Desktop.Children.Add(HighScoresButton);
+			titleGui.Screen.Desktop.Children.Add(ExitButton);
 		}
 
 		private void StartButtonPressed(object Sender, EventArgs e)
